@@ -16,16 +16,14 @@ class UiTdatabank():
         self.url = settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
 
-    def find(self, organiser_label=None):
-        q = ''
-        if organiser_label:
-            q += 'organiser_label:' + organiser_label
-        params = {'q': q, 'group': 'true'}
+    def find_upcoming_events_by_organiser_label(self, organiser_label):
+        q = 'organiser_label:' + organiser_label + ' AND availableto:[NOW TO *]'
+        params = {'q': q, 'fq': 'type:event', 'group': 'event'}
         r = requests.get(self.url, auth=self.auth, params=params, headers=self.headers)
         return loads(r.text)
 
 if __name__ == '__main__':
     ud = UiTdatabank()
-    flagey = ud.find(organiser_label="Flagey")
+    flagey = ud.find_upcoming_events_by_organiser_label("Flagey")
     with open("flagey.json", "w", "utf-8") as f:
         f.write(dumps(flagey, indent=2))
