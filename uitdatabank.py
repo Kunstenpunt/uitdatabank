@@ -9,6 +9,14 @@ class UiTdatabankSearchResults():
     def __init__(self, results_string):
         self.results = loads(results_string)
 
+    def get_events(self):
+        for item in self.results["rootObject"]:
+            if "event" in item:
+                yield {
+                    "title": item["event"]["eventdetails"]["eventdetail"][0]["title"],
+                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
+                }
+
 
 class UiTdatabank():
     def __init__(self, settings_file="settings.cfg"):
@@ -34,5 +42,7 @@ class UiTdatabank():
 if __name__ == '__main__':
     ud = UiTdatabank()
     flagey = ud.find_upcoming_events_by_organiser_label("Flagey")
+    for i, item in enumerate(flagey.get_events()):
+        print(i, item)
     with open("flagey.json", "w", "utf-8") as f:
         f.write(dumps(flagey.results, indent=2))
