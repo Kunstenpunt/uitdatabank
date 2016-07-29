@@ -34,7 +34,7 @@ class UiTdatabank():
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = 'organiser_label:' + organiser_label + ' AND availableto:[NOW TO *]'
-        params = {'q': q, 'fq': 'type:event', 'group': 'event'}
+        params = {'q': q, 'fq': 'type:event', 'group': 'event', 'rows': 10}
         result = self.find(params)
         return UiTdatabankSearchResults(result)
 
