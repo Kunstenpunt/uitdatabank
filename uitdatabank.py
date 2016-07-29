@@ -5,6 +5,11 @@ from requests_oauthlib import OAuth1
 from configparser import ConfigParser
 
 
+class UiTdatabankSearchResults():
+    def __init__(self, results_string):
+        self.results = loads(results_string)
+
+
 class UiTdatabank():
     def __init__(self, settings_file="settings.cfg"):
         settings = ConfigParser()
@@ -22,11 +27,12 @@ class UiTdatabank():
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = 'organiser_label:' + organiser_label + ' AND availableto:[NOW TO *]'
         params = {'q': q, 'fq': 'type:event', 'group': 'event'}
-        return loads(self.find(params))
+        result = self.find(params)
+        return UiTdatabankSearchResults(result)
 
 
 if __name__ == '__main__':
     ud = UiTdatabank()
     flagey = ud.find_upcoming_events_by_organiser_label("Flagey")
     with open("flagey.json", "w", "utf-8") as f:
-        f.write(dumps(flagey, indent=2))
+        f.write(dumps(flagey.results, indent=2))
