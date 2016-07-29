@@ -22,6 +22,7 @@ class UiTdatabank():
         r = requests.get(self.url, auth=self.auth, params=params, headers=self.headers)
         return loads(r.text)
 
+
 if __name__ == '__main__':
     ud = UiTdatabank()
     flagey = ud.find_upcoming_events_by_organiser_label("Flagey")
