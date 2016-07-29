@@ -16,11 +16,13 @@ class UiTdatabank():
         self.url = settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
 
+    def find(self, params):
+        return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
+
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = 'organiser_label:' + organiser_label + ' AND availableto:[NOW TO *]'
         params = {'q': q, 'fq': 'type:event', 'group': 'event'}
-        r = requests.get(self.url, auth=self.auth, params=params, headers=self.headers)
-        return loads(r.text)
+        return loads(self.find(params))
 
 
 if __name__ == '__main__':
