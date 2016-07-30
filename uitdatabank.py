@@ -20,13 +20,13 @@ class UiTdatabankSearchResults():
 
 class UiTdatabank():
     def __init__(self, settings_file="settings.cfg"):
-        settings = ConfigParser()
-        settings.read(settings_file)
-        self.auth = OAuth1(settings["oauth"]["app_key"],
-                           settings["oauth"]["app_secret"],
-                           settings["oauth"]["user_token"],
-                           settings["oauth"]["user_secret"])
-        self.url = settings["uitdatabank"]["url"]
+        self.settings = ConfigParser()
+        self.settings.read(settings_file)
+        self.auth = OAuth1(self.settings["oauth"]["app_key"],
+                           self.settings["oauth"]["app_secret"],
+                           self.settings["oauth"]["user_token"],
+                           self.settings["oauth"]["user_secret"])
+        self.url = self.settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
 
     def find(self, params):
