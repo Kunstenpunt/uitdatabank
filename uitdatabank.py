@@ -37,12 +37,3 @@ class UiTdatabank():
         params = {'q': q, 'fq': 'type:event', 'group': 'event', 'rows': 10}
         result = self.find(params)
         return UiTdatabankSearchResults(result)
-
-
-if __name__ == '__main__':
-    ud = UiTdatabank()
-    flagey = ud.find_upcoming_events_by_organiser_label("Flagey")
-    for i, item in enumerate(flagey.get_events()):
-        print(i, item)
-    with open("flagey.json", "w", "utf-8") as f:
-        f.write(dumps(flagey.results, indent=2))
