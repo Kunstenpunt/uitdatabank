@@ -1,6 +1,7 @@
 import unittest
 from codecs import open
 from uitdatabank import UiTdatabankSearchResults
+from datetime import datetime
 
 
 class TestUiTdatabankSearchResults(unittest.TestCase):
@@ -11,6 +12,15 @@ class TestUiTdatabankSearchResults(unittest.TestCase):
     def test_get_events(self):
         events = list(self.searchresults.get_events())
         self.assertEquals(len(events), 10)
+
+    def test_get_when_from_item(self):
+        for item in self.searchresults.results["rootObject"]:
+            if "event" in item:
+                calendarstr = item["event"]["eventdetails"]["eventdetail"][0]["calendarsummary"]
+                when = self.searchresults._get_when_from_event(item)
+                day, month, year = [int(i) for i in calendarstr.split(" ")[1].split("/")]
+                hour, minute = [int(i) for i in calendarstr.split(" ")[3].split(":")]
+                self.assertEqual(when, datetime(2000 + year, month, day, hour, minute))
 
 if __name__ == '__main__':
     unittest.main()

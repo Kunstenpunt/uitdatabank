@@ -2,18 +2,30 @@ import requests
 from json import loads
 from requests_oauthlib import OAuth1
 from configparser import ConfigParser
+from datetime import datetime, timedelta
 
 
 class UiTdatabankSearchResults():
     def __init__(self, results_string):
         self.results = loads(results_string)
 
+    @staticmethod
+    def _get_when_from_event(event):
+        """
+        Fetches the date and hour at which the event starts
+        :param event: the 'event' json document that is produced by the UiTdatabank v2 api
+        :return: a python datetime object indicating at what day and hour the event starts
+        """
+        return datetime.fromtimestamp(event["event"]["calendar"]["timestamps"]["timestamp"][0]["date"] / 1000.) + \
+               timedelta(milliseconds=event["event"]["calendar"]["timestamps"]["timestamp"][0]["timestart"], hours=1)
+
     def get_events(self):
         for item in self.results["rootObject"]:
             if "event" in item:
                 yield {
                     "title": item["event"]["eventdetails"]["eventdetail"][0]["title"],
-                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
+                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"],
+                    "when": self._get_when_from_event(item)
                 }
 
 
