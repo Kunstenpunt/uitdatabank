@@ -19,5 +19,17 @@ class TestUiTdatabank(unittest.TestCase):
         with open("test_output_of_upcoming_events_query.json", "w", "utf-8") as f:
             f.write(dumps(events.results, indent=2))
 
+    def test_construct_event_query(self):
+        single_field = [("title", "Hello world")]
+        double_field_with_and = [("title", "Hello world"), "AND", ("city", "Brussel")]
+        single_field_full_text = ["open air cinema"]
+        wrong_list_because_no_boolean = [("title", "Hello world"), ("city", "Brussel")]
+        wrong_list_because_no_valid_field = [("title", "Hello world"), ("foo", "bar")]
+        self.assertEqual(self.udb.construct_event_query(single_field), "title:Hello world")
+        self.assertEqual(self.udb.construct_event_query(double_field_with_and), "title:Hello world AND city:Brussel")
+        self.assertEqual(self.udb.construct_event_query(single_field_full_text), "open air cinema")
+        self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_boolean)
+        self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_valid_field)
+
 if __name__ == '__main__':
     unittest.main()

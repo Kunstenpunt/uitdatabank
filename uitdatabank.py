@@ -3,6 +3,8 @@ from json import loads
 from requests_oauthlib import OAuth1
 from configparser import ConfigParser
 from datetime import datetime, timedelta
+from codecs import open
+from os.path import dirname
 
 
 class UiTdatabankSearchResults():
@@ -41,11 +43,29 @@ class UiTdatabank():
                            self.settings["oauth"]["user_secret"])
         self.url = self.settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
+        with open(dirname(__file__) + "/resources/supported_event_query_fields.txt", "r", "utf-8") as f:
+            self.supported_event_query_fields = [item.strip() for item in f.readlines()]
 
     def find(self, params):
         return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
 
+    def construct_event_query(self, key_value_tuples_with_booleans=list):
+        if len(key_value_tuples_with_booleans) % 2 == 0:
+            raise ValueError("Not a correct query")
+        else:
+            q = ""
+            for i, item in enumerate(key_value_tuples_with_booleans):
+                if (i % 2) == 0 and isinstance(item, tuple) and len(item) == 2 and item[0] in self.supported_event_query_fields:
+                    q += ":".join(item)
+                elif (i % 2) == 0 and isinstance(item, str) and item not in ["AND", "OR", "NOT"] and len(key_value_tuples_with_booleans) == 1:
+                    q += item
+                elif (i % 2) != 0 and isinstance(item, str) and item in ["AND", "OR", "NOT"]:
+                    q += " " + item + " "
+                else:
+                    raise ValueError("Not a correct query")
+            return q
+
     def find_upcoming_events_by_organiser_label(self, organiser_label):
-        q = 'organiser_label:' + organiser_label + ' AND startdate:[NOW TO *]'
         params = {'q': q, 'fq': 'type:event', 'group': False, 'rows': 10 if self.test else 10000}
+        q = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
         return UiTdatabankSearchResults(result)
