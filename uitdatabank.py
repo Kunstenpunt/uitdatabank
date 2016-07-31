@@ -31,8 +31,9 @@ class UiTdatabankSearchResults():
 
 
 class UiTdatabank():
-    def __init__(self, settings_file="settings.cfg"):
+    def __init__(self, settings_file="settings.cfg", test=False):
         self.settings = ConfigParser()
+        self.test = test
         self.settings.read(settings_file)
         self.auth = OAuth1(self.settings["oauth"]["app_key"],
                            self.settings["oauth"]["app_secret"],

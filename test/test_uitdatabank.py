@@ -5,7 +5,7 @@ from uitdatabank import UiTdatabank
 class TestUiTdatabank(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.udb = UiTdatabank("../settings_example.cfg")
+        cls.udb = UiTdatabank("../settings_example.cfg", test=True)
         cls.events = cls.udb.find_upcoming_events_by_organiser_label(organiser_label="Flagey")
 
     def test_settings_are_read_in_correctly(self):
