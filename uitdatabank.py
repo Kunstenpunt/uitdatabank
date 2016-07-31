@@ -42,11 +42,10 @@ class UiTdatabank():
         self.url = self.settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
 
-    def __find(self, params):
+    def find(self, params):
         return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = 'organiser_label:' + organiser_label + ' AND startdate:[NOW TO *]'
         params = {'q': q, 'fq': 'type:event', 'group': False, 'rows': 10 if self.test else 10000}
-        result = self.__find(params)
         return UiTdatabankSearchResults(result)
