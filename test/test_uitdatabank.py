@@ -31,5 +31,11 @@ class TestUiTdatabank(unittest.TestCase):
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_boolean)
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_valid_field)
 
+    def test_construct_query_parameters(self):
+        good_parameters = {"q": "q"}
+        bad_parameters = {"foo": "bar"}
+        self.assertDictEqual(self.udb.construct_query_parameters(good_parameters), {"q": "q"})
+        self.assertRaises(ValueError, self.udb.construct_query_parameters, bad_parameters)
+
 if __name__ == '__main__':
     unittest.main()

@@ -45,9 +45,20 @@ class UiTdatabank():
         self.headers = {'Accept': 'application/json'}
         with open(dirname(__file__) + "/resources/supported_event_query_fields.txt", "r", "utf-8") as f:
             self.supported_event_query_fields = [item.strip() for item in f.readlines()]
+        with open(dirname(__file__) + "/resources/supported_query_parameter_fields.txt", "r", "utf-8") as f:
+            self.supported_query_parameter_fields = [item.strip() for item in f.readlines()]
 
     def find(self, params):
         return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
+
+    def construct_query_parameters(self, kwargs):
+        out = {}
+        for key, value in kwargs.items():
+            if key in self.supported_query_parameter_fields:
+                out[key] = value
+            else:
+                raise ValueError("Not a correct query parameter")
+        return out
 
     def construct_event_query(self, key_value_tuples_with_booleans=list):
         if len(key_value_tuples_with_booleans) % 2 == 0:
@@ -66,7 +77,7 @@ class UiTdatabank():
             return q
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
-        params = {'q': q, 'fq': 'type:event', 'group': False, 'rows': 10 if self.test else 10000}
         q = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
+        params = self.construct_query_parameters({'q': q, 'fq': 'type:event', 'rows': 10 if self.test else 10000})
         result = self.find(params)
         return UiTdatabankSearchResults(result)

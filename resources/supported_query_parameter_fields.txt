@@ -1,0 +1,13 @@
+q
+fq
+start
+rows
+sort
+group
+pt
+sfield
+d
+facetField
+transform
+past
+datetype
