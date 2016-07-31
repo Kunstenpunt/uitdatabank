@@ -12,13 +12,13 @@ class UiTdatabankSearchResults():
     @staticmethod
     def _get_when_from_event(event):
         """
-        Fetches the date and hour at which the event starts
+        Fetches the dates and hours at which the event starts
         :param event: the 'event' json document that is produced by the UiTdatabank v2 api
-        :return: a python datetime object indicating at what day and hour the event starts
+        :return: a list of python datetime objects indicating at what day and hour the event starts
         """
-        print(event["event"]["calendar"])
-        return datetime.fromtimestamp(event["event"]["calendar"]["timestamps"]["timestamp"][0]["date"] / 1000.) + \
-               timedelta(milliseconds=event["event"]["calendar"]["timestamps"]["timestamp"][0]["timestart"], hours=1)
+        return [datetime.fromtimestamp(ts["date"] / 1000.) + timedelta(milliseconds=ts["timestart"], hours=1)
+                for ts in event["event"]["calendar"]["timestamps"]["timestamp"]]
+
 
     def get_events(self):
         for item in self.results["rootObject"]:
@@ -46,6 +46,6 @@ class UiTdatabank():
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = 'organiser_label:' + organiser_label + ' AND startdate:[NOW TO *]'
-        params = {'q': q, 'fq': 'type:event', 'group': 'event', 'rows': 10}
-        result = self.find(params)
+        params = {'q': q, 'fq': 'type:event', 'group': False, 'rows': 10 if self.test else 10000}
+        result = self.__find(params)
         return UiTdatabankSearchResults(result)
