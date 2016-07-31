@@ -32,7 +32,7 @@ class UiTdatabank():
         return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
-        q = 'organiser_label:' + organiser_label + ' AND availableto:[NOW TO *]'
+        q = 'organiser_label:' + organiser_label + ' AND startdate:[NOW TO *]'
         params = {'q': q, 'fq': 'type:event', 'group': 'event', 'rows': 10}
         result = self.find(params)
         return UiTdatabankSearchResults(result)
