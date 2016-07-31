@@ -1,6 +1,5 @@
 import requests
-from codecs import open
-from json import loads, dumps
+from json import loads
 from requests_oauthlib import OAuth1
 from configparser import ConfigParser
 
