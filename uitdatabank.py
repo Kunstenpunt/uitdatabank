@@ -16,12 +16,13 @@ class UiTdatabankSearchResults():
         :param event: the 'event' json document that is produced by the UiTdatabank v2 api
         :return: a python datetime object indicating at what day and hour the event starts
         """
+        print(event["event"]["calendar"])
         return datetime.fromtimestamp(event["event"]["calendar"]["timestamps"]["timestamp"][0]["date"] / 1000.) + \
                timedelta(milliseconds=event["event"]["calendar"]["timestamps"]["timestamp"][0]["timestart"], hours=1)
 
     def get_events(self):
         for item in self.results["rootObject"]:
-            if "event" in item:
+            if "event" in item and item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]:
                 yield {
                     "title": item["event"]["eventdetails"]["eventdetail"][0]["title"],
                     "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"],
