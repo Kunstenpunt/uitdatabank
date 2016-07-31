@@ -31,7 +31,7 @@ class UiTdatabankSearchResults():
 
 
 class UiTdatabank():
-    def __init__(self, settings_file="settings.cfg", test=False):
+    def __init__(self, settings_file="settings_example.cfg", test=False):
         self.settings = ConfigParser()
         self.test = test
         self.settings.read(settings_file)
