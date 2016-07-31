@@ -68,4 +68,5 @@ class UiTdatabank():
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         params = {'q': q, 'fq': 'type:event', 'group': False, 'rows': 10 if self.test else 10000}
         q = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
+        result = self.find(params)
         return UiTdatabankSearchResults(result)
