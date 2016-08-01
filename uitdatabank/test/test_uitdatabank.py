@@ -1,13 +1,14 @@
 import unittest
-from uitdatabank import UiTdatabank
+from uitdatabank.uitdatabank import UiTdatabank
 from json import dumps
 from codecs import open
+from os.path import dirname
 
 
 class TestUiTdatabank(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.udb = UiTdatabank("../settings_example.cfg", test=True)
+        cls.udb = UiTdatabank(dirname(__file__) + "/settings_example.cfg", test=True)
         cls.events = cls.udb.find_upcoming_events_by_organiser_label(organiser_label="Flagey")
 
     def test_settings_are_read_in_correctly(self):
@@ -16,7 +17,7 @@ class TestUiTdatabank(unittest.TestCase):
 
     def test_find_upcoming_events_by_organiser_label(self):
         events = self.udb.find_upcoming_events_by_organiser_label(organiser_label="Flagey")
-        with open("test_output_of_upcoming_events_query.json", "w", "utf-8") as f:
+        with open(dirname(__file__) + "/test_output_of_upcoming_events_query.json", "w", "utf-8") as f:
             f.write(dumps(events.results, indent=2))
 
     def test_construct_production_query(self):

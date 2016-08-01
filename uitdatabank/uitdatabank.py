@@ -36,7 +36,13 @@ class UiTdatabankSearchResults():
 
 
 class UiTdatabank():
-    def __init__(self, settings_file="settings_example.cfg", test=False):
+    def __init__(self, settings_file=dirname(__file__) + "settings_example.cfg", test=False):
+        """
+        Wrapper around UiTdatabank API v2
+        :param settings_file: a file in which the settings, such as oauth credentials and api url, are made explicit
+        :param test: a boolean that can be set to True (default: False) so that only a limited amount of results is returned for test purposes
+        :return: an UiTdatabank wrapper that can be used to query the database, whose results will be returned as an UiTdatabankSearchresults object
+        """
         self.settings = ConfigParser()
         self.test = test
         self.settings.read(settings_file)
@@ -52,6 +58,11 @@ class UiTdatabank():
         self.supported_query_parameter_fields = self.__get_supported_fields_from_textfile("/resources/supported_query_parameter_fields.txt")
 
     def __get_supported_fields_from_textfile(self, textfile):
+        """
+        Parses a textfile in which supported field names are listed line by line
+        :param textfile: path to a textfile with supported fields
+        :return: list of supported fields
+        """
         with open(dirname(__file__) + textfile, "r", "utf-8") as f:
             return [item.strip() for item in f.readlines()]
 
