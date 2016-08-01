@@ -8,6 +8,34 @@ from os.path import dirname
 
 
 class UiTdatabankSearchResults():
+class UiTdatabankEventParser:
+    @staticmethod
+    def get_when_from_event(event):
+        """
+        Fetches the dates and hours at which the event start (or started)
+        :param event: the 'event' json document that is produced by the UiTdatabank v2 api
+        :return: label, a python datetime objects indicating at what day and hour the event starts the earliest, with
+        epoch = 0 if no result
+        """
+        if event["event"]["calendar"]["timestamps"]:
+            return "when", min([datetime.fromtimestamp(ts["date"] / 1000.) +
+                                timedelta(milliseconds=ts["timestart"], hours=1)
+                                for ts in event["event"]["calendar"]["timestamps"]["timestamp"]])
+        elif event["event"]["calendar"]["periods"]:
+            return "when", min([datetime.fromtimestamp(event["event"]["calendar"]["periods"]["period"]["datefrom"] /
+                                                       1000.)])
+        else:
+            return "when", datetime(1970, 1, 1)
+
+    @staticmethod
+    def get_title_from_event(event):
+        return "title", event["event"]["eventdetails"]["eventdetail"][0]["title"]
+
+    @staticmethod
+    def get_long_description_from_event(event):
+        return "long description", event["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
+
+
     def __init__(self, results_string):
         """
         Initializes the uitdatabank search results
@@ -16,23 +44,13 @@ class UiTdatabankSearchResults():
         """
         self.results = loads(results_string)
 
-    @staticmethod
-    def _get_when_from_event(event):
-        """
-        Fetches the dates and hours at which the event starts
-        :param event: the 'event' json document that is produced by the UiTdatabank v2 api
-        :return: a list of python datetime objects indicating at what day and hour the event starts
-        """
-        return [datetime.fromtimestamp(ts["date"] / 1000.) + timedelta(milliseconds=ts["timestart"], hours=1)
-                for ts in event["event"]["calendar"]["timestamps"]["timestamp"]]
 
     def get_events(self):
         for item in self.results["rootObject"]:
             if "event" in item:
-                yield {
-                    "title": item["event"]["eventdetails"]["eventdetail"][0]["title"],
-                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
-                }
+                yield dict([UiTdatabankEventParser.get_title_from_event(item),
+                            UiTdatabankEventParser.get_long_description_from_event(item),
+                            UiTdatabankEventParser.get_when_from_event(item)])
 
 
 class UiTdatabank():
