@@ -79,13 +79,13 @@ class UiTdatabank():
             return q
 
     def construct_production_query(self, key_value_tuples_with_booleans=list):
-        return self.__construct_query(self.supported_production_query_fields, key_value_tuples_with_booleans)
+        return self.__construct_query(self.supported_production_query_fields, key_value_tuples_with_booleans), "type:production"
 
     def construct_event_query(self, key_value_tuples_with_booleans=list):
-        return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans)
+        return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans), "type:event"
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
-        q = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
-        params = self.construct_query_parameters({'q': q, 'fq': 'type:event', 'rows': 10 if self.test else 10000})
         result = self.find(params)
         return UiTdatabankSearchResults(result)
+        q, fq = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
+        params = self.construct_query_parameters({'q': q, 'fq': fq, 'rows': 10 if self.test else 10000})

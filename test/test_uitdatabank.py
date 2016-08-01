@@ -25,9 +25,9 @@ class TestUiTdatabank(unittest.TestCase):
         single_field_full_text = ["open air cinema"]
         wrong_list_because_no_boolean = [("title", "Hello world"), ("organiser_label", "Brussel")]
         wrong_list_because_no_valid_field = [("title", "Hello world"), ("foo", "bar")]
-        self.assertEqual(self.udb.construct_production_query(single_field), "title:Hello world")
-        self.assertEqual(self.udb.construct_production_query(double_field_with_and), "title:Hello world AND organiser_label:Brussel")
-        self.assertEqual(self.udb.construct_production_query(single_field_full_text), "open air cinema")
+        self.assertEqual(self.udb.construct_production_query(single_field), ("title:Hello world", "type:production"))
+        self.assertEqual(self.udb.construct_production_query(double_field_with_and), ("title:Hello world AND organiser_label:Brussel", "type:production"))
+        self.assertEqual(self.udb.construct_production_query(single_field_full_text), ("open air cinema", "type:production"))
         self.assertRaises(ValueError, self.udb.construct_production_query, wrong_list_because_no_boolean)
         self.assertRaises(ValueError, self.udb.construct_production_query, wrong_list_because_no_valid_field)
 
@@ -37,9 +37,9 @@ class TestUiTdatabank(unittest.TestCase):
         single_field_full_text = ["open air cinema"]
         wrong_list_because_no_boolean = [("title", "Hello world"), ("city", "Brussel")]
         wrong_list_because_no_valid_field = [("title", "Hello world"), ("foo", "bar")]
-        self.assertEqual(self.udb.construct_event_query(single_field), "title:Hello world")
-        self.assertEqual(self.udb.construct_event_query(double_field_with_and), "title:Hello world AND city:Brussel")
-        self.assertEqual(self.udb.construct_event_query(single_field_full_text), "open air cinema")
+        self.assertEqual(self.udb.construct_event_query(single_field), ("title:Hello world", "type:event"))
+        self.assertEqual(self.udb.construct_event_query(double_field_with_and), ("title:Hello world AND city:Brussel", "type:event"))
+        self.assertEqual(self.udb.construct_event_query(single_field_full_text), ("open air cinema", "type:event"))
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_boolean)
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_valid_field)
 
