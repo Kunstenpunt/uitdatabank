@@ -45,6 +45,8 @@ class UiTdatabank():
         self.headers = {'Accept': 'application/json'}
         with open(dirname(__file__) + "/resources/supported_event_query_fields.txt", "r", "utf-8") as f:
             self.supported_event_query_fields = [item.strip() for item in f.readlines()]
+        with open(dirname(__file__) + "/resources/supported_production_query_fields.txt", "r", "utf-8") as f:
+            self.supported_production_query_fields = [item.strip() for item in f.readlines()]
         with open(dirname(__file__) + "/resources/supported_query_parameter_fields.txt", "r", "utf-8") as f:
             self.supported_query_parameter_fields = [item.strip() for item in f.readlines()]
 
@@ -76,6 +78,9 @@ class UiTdatabank():
                 else:
                     raise ValueError("Not a correct query")
             return q
+
+    def construct_production_query(self, key_value_tuples_with_booleans=list):
+        return self.__construct_query(self.supported_production_query_fields, key_value_tuples_with_booleans)
 
     def construct_event_query(self, key_value_tuples_with_booleans=list):
         return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans)
