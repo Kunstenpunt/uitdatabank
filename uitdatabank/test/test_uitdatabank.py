@@ -15,11 +15,6 @@ class TestUiTdatabank(unittest.TestCase):
         self.assertEqual(self.udb.settings["oauth"]["app_key"], "BAAC107B-632C-46C6-A254-13BC2CE19C6C")
         self.assertEqual(self.udb.settings["oauth"]["app_secret"], "ec9a0e8c2cdc52886bc545e14f888612")
 
-    def test_find_upcoming_events_by_organiser_label(self):
-        events = self.udb.find_upcoming_events_by_organiser_label(organiser_label="Flagey")
-        with open(dirname(__file__) + "/test_output_of_upcoming_events_query.json", "w", "utf-8") as f:
-            f.write(dumps(events.results, indent=2))
-
     def test_construct_production_query(self):
         single_field = [("title", "Hello world")]
         double_field_with_and = [("title", "Hello world"), "AND", ("organiser_label", "Brussel")]
