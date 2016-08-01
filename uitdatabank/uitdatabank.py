@@ -44,6 +44,16 @@ class UiTdatabankEventParser:
         """
         self.results = loads(results_string)
 
+    def get_soonest_event(self):
+        earliest_moment = datetime.today() + timedelta(weeks=100)
+        soonest_event = None
+        for item in self.results["rootObject"]:
+            if "event" in item:
+                when_from_event = UiTdatabankEventParser.get_when_from_event(item)[1]
+                if when_from_event < earliest_moment:
+                    earliest_moment = when_from_event
+                    soonest_event = item
+        return soonest_event
 
     def get_events(self):
         for item in self.results["rootObject"]:
