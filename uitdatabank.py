@@ -21,7 +21,6 @@ class UiTdatabankSearchResults():
         return [datetime.fromtimestamp(ts["date"] / 1000.) + timedelta(milliseconds=ts["timestart"], hours=1)
                 for ts in event["event"]["calendar"]["timestamps"]["timestamp"]]
 
-
     def get_events(self):
         for item in self.results["rootObject"]:
             if "event" in item and item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]:
