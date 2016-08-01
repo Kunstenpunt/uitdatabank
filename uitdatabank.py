@@ -127,5 +127,6 @@ class UiTdatabank():
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q, fq = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
+        #TODO investigate if fq also works with booleans?
         params = self.construct_query_parameters({'q': q, 'fq': fq, 'rows': 10 if self.test else 10000})
         return self.find(params)
