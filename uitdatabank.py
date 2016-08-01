@@ -50,7 +50,7 @@ class UiTdatabank():
             self.supported_query_parameter_fields = [item.strip() for item in f.readlines()]
 
     def find(self, params):
-        return requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text
+        return UiTdatabankSearchResults(requests.get(self.url, auth=self.auth, params=params, headers=self.headers).text)
 
     def construct_query_parameters(self, kwargs):
         out = {}
@@ -85,7 +85,6 @@ class UiTdatabank():
         return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans), "type:event"
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
-        result = self.find(params)
-        return UiTdatabankSearchResults(result)
         q, fq = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
         params = self.construct_query_parameters({'q': q, 'fq': fq, 'rows': 10 if self.test else 10000})
+        return self.find(params)
