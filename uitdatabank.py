@@ -47,12 +47,13 @@ class UiTdatabank():
                            self.settings["oauth"]["user_secret"])
         self.url = self.settings["uitdatabank"]["url"]
         self.headers = {'Accept': 'application/json'}
-        with open(dirname(__file__) + "/resources/supported_event_query_fields.txt", "r", "utf-8") as f:
-            self.supported_event_query_fields = [item.strip() for item in f.readlines()]
-        with open(dirname(__file__) + "/resources/supported_production_query_fields.txt", "r", "utf-8") as f:
-            self.supported_production_query_fields = [item.strip() for item in f.readlines()]
-        with open(dirname(__file__) + "/resources/supported_query_parameter_fields.txt", "r", "utf-8") as f:
-            self.supported_query_parameter_fields = [item.strip() for item in f.readlines()]
+        self.supported_event_query_fields = self.__get_supported_fields_from_textfile("/resources/supported_event_query_fields.txt")
+        self.supported_production_query_fields = self.__get_supported_fields_from_textfile("/resources/supported_production_query_fields.txt")
+        self.supported_query_parameter_fields = self.__get_supported_fields_from_textfile("/resources/supported_query_parameter_fields.txt")
+
+    def __get_supported_fields_from_textfile(self, textfile):
+        with open(dirname(__file__) + textfile, "r", "utf-8") as f:
+            return [item.strip() for item in f.readlines()]
 
     def find(self, params):
         """
