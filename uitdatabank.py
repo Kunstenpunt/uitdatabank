@@ -49,6 +49,7 @@ class UiTdatabank():
         self.headers = {'Accept': 'application/json'}
         self.supported_event_query_fields = self.__get_supported_fields_from_textfile("/resources/supported_event_query_fields.txt")
         self.supported_production_query_fields = self.__get_supported_fields_from_textfile("/resources/supported_production_query_fields.txt")
+        self.supported_actor_query_fields = self.__get_supported_fields_from_textfile("/resources/supported_actor_query_fields.txt")
         self.supported_query_parameter_fields = self.__get_supported_fields_from_textfile("/resources/supported_query_parameter_fields.txt")
 
     def __get_supported_fields_from_textfile(self, textfile):
@@ -115,6 +116,14 @@ class UiTdatabank():
         :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the api call)
         """
         return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans), "type:event"
+
+    def construct_actor_query(self, key_value_tuples_with_booleans=list):
+        """
+        Construct a query for actors
+        :param key_value_tuples_with_booleans: a list of fields that is supported in the given type of query
+        :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the api call)
+        """
+        return self.__construct_query(self.supported_actor_query_fields, key_value_tuples_with_booleans), "type:actor"
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q, fq = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
