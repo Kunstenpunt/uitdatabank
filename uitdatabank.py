@@ -60,13 +60,14 @@ class UiTdatabank():
                 raise ValueError("Not a correct query parameter")
         return out
 
-    def construct_event_query(self, key_value_tuples_with_booleans=list):
+    @staticmethod
+    def __construct_query(supported_fields, key_value_tuples_with_booleans=list):
         if len(key_value_tuples_with_booleans) % 2 == 0:
             raise ValueError("Not a correct query")
         else:
             q = ""
             for i, item in enumerate(key_value_tuples_with_booleans):
-                if (i % 2) == 0 and isinstance(item, tuple) and len(item) == 2 and item[0] in self.supported_event_query_fields:
+                if (i % 2) == 0 and isinstance(item, tuple) and len(item) == 2 and item[0] in supported_fields:
                     q += ":".join(item)
                 elif (i % 2) == 0 and isinstance(item, str) and item not in ["AND", "OR", "NOT"] and len(key_value_tuples_with_booleans) == 1:
                     q += item
@@ -75,6 +76,9 @@ class UiTdatabank():
                 else:
                     raise ValueError("Not a correct query")
             return q
+
+    def construct_event_query(self, key_value_tuples_with_booleans=list):
+        return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans)
 
     def find_upcoming_events_by_organiser_label(self, organiser_label):
         q = self.construct_event_query([("organiser_label", organiser_label), "AND", ("startdate", "[NOW TO *]")])
