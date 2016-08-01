@@ -28,11 +28,10 @@ class UiTdatabankSearchResults():
 
     def get_events(self):
         for item in self.results["rootObject"]:
-            if "event" in item and item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]:
+            if "event" in item:
                 yield {
                     "title": item["event"]["eventdetails"]["eventdetail"][0]["title"],
-                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"],
-                    "when": self._get_when_from_event(item)
+                    "description": item["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
                 }
 
 
