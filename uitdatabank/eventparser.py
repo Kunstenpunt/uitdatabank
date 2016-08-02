@@ -17,7 +17,7 @@ class EventParser:
         """
         if event["event"]["calendar"]["timestamps"]:
             return "when", min([datetime.fromtimestamp(ts["date"] / 1000.) +
-                                timedelta(milliseconds=ts["timestart"], hours=1)
+                                timedelta(milliseconds=ts["timestart"] if ts["timestart"] else -3600000, hours=1)
                                 for ts in event["event"]["calendar"]["timestamps"]["timestamp"]])
         elif event["event"]["calendar"]["periods"]:
             return "when", min([datetime.fromtimestamp(event["event"]["calendar"]["periods"]["period"]["datefrom"] /
