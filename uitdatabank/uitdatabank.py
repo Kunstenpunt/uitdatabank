@@ -183,7 +183,8 @@ class UiTdatabank:
 
         Query for an event that takes place in BXL and that somewhere contains the word 'jazz':
 
-        >>> params = udb.construct_event_query([("city", "Brussel"), "AND", "jazz"])
+        >>> q, fq = udb.construct_event_query([("city", "Brussel"), "AND", "jazz"])
+        >>> params = udb.construct_parameters_for_api_call({"q": q, "fq": fq})
         >>> searchresults = udb.find(params)
         """
         return self.construct_query(self.event_query_fields, key_value_tuples_with_booleans), "type:event"
@@ -195,10 +196,5 @@ class UiTdatabank:
         :param key_value_tuples_with_booleans: a list of fields that is supported in the given type of query
 
         :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the call), this output fits :func:`find`
-
-        Query for an event that takes place in BXL and that is organised by Flagey:
-
-        >>> params = udb.construct_actor_query([("city", "Brussel"), "AND", ("organiser_label": "Flagey")]
-        >>> searchresults = udb.find(params)
         """
         return self.construct_query(self.actor_query_fields, key_value_tuples_with_booleans), "type:actor"
