@@ -1,77 +1,24 @@
 import requests
-from json import loads
 from requests_oauthlib import OAuth1
 from configparser import ConfigParser
-from datetime import datetime, timedelta
 from codecs import open
 from os.path import dirname
-
-
-class UiTdatabankEventParser:
-    @staticmethod
-    def get_when_from_event(event):
-        """
-        Fetches the dates and hours at which the event start (or started)
-        :param event: the 'event' json document that is produced by the UiTdatabank v2 api
-        :return: label, a python datetime objects indicating at what day and hour the event starts the earliest, with
-        epoch = 0 if no result
-        """
-        if event["event"]["calendar"]["timestamps"]:
-            return "when", min([datetime.fromtimestamp(ts["date"] / 1000.) +
-                                timedelta(milliseconds=ts["timestart"], hours=1)
-                                for ts in event["event"]["calendar"]["timestamps"]["timestamp"]])
-        elif event["event"]["calendar"]["periods"]:
-            return "when", min([datetime.fromtimestamp(event["event"]["calendar"]["periods"]["period"]["datefrom"] /
-                                                       1000.)])
-        else:
-            return "when", datetime(1970, 1, 1)
-
-    @staticmethod
-    def get_title_from_event(event):
-        return "title", event["event"]["eventdetails"]["eventdetail"][0]["title"]
-
-    @staticmethod
-    def get_long_description_from_event(event):
-        return "long description", event["event"]["eventdetails"]["eventdetail"][0]["longdescription"]
-
-
-class UiTdatabankSearchResults:
-    def __init__(self, results_string):
-        """
-        Initializes the uitdatabank search results
-        :param results_string: the json output of the uitdatabank json
-        :return: None
-        """
-        self.results = loads(results_string)
-
-    def get_soonest_event(self):
-        earliest_moment = datetime.today() + timedelta(weeks=100)
-        soonest_event = None
-        for item in self.results["rootObject"]:
-            if "event" in item:
-                when_from_event = UiTdatabankEventParser.get_when_from_event(item)[1]
-                if when_from_event < earliest_moment:
-                    earliest_moment = when_from_event
-                    soonest_event = item
-        return soonest_event
-
-    def get_events(self):
-        for item in self.results["rootObject"]:
-            if "event" in item:
-                yield dict([UiTdatabankEventParser.get_title_from_event(item),
-                            UiTdatabankEventParser.get_long_description_from_event(item),
-                            UiTdatabankEventParser.get_when_from_event(item)])
+from uitdatabank.searchresults import SearchResults
 
 
 class UiTdatabank:
+    """
+    Main class for making API calls to UiTdatabank API v2
+    """
+
     def __init__(self, settings_file=dirname(__file__) + "/test/settings_example.cfg", test=False):
         """
         Wrapper around UiTdatabank API v2
+
         :param settings_file: a file in which the settings, such as oauth credentials and api url, are made explicit
-        :param test: a boolean that can be set to True (default: False) so that only a limited amount of results is
-        returned for test purposes
-        :return: an UiTdatabank wrapper that can be used to query the database, whose results will be returned as an
-        UiTdatabankSearchresults object
+        :param test: a boolean that can be set to True (default: False) so that only a limited amount of results is returned for test purposes
+
+        :return: an UiTdatabank wrapper that can be used to query the database, whose results will be returned as an UiTdatabankSearchresults object
         """
         self.settings = ConfigParser()
         self.test = test
@@ -92,7 +39,9 @@ class UiTdatabank:
     def __get_supported_fields(textfile):
         """
         Parses a textfile in which supported field names are listed line by line
+
         :param textfile: path to a textfile with supported fields
+
         :return: list of supported fields
         """
         with open(dirname(__file__) + textfile, "r", "utf-8") as f:
@@ -101,16 +50,19 @@ class UiTdatabank:
     def find(self, prms):
         """
         Main find method that makes the actual api call
+
         :param prms: the full query, containing the q, fq, etc. fields
+
         :return: An uitdatabank searchresults object
         """
-        return UiTdatabankSearchResults(requests.get(self.url, auth=self.auth, params=prms, headers=self.headers).text)
+        return SearchResults(requests.get(self.url, auth=self.auth, params=prms, headers=self.headers).text)
 
     def construct_query_parameters(self, kwargs):
         """
         Validates the query parameter fields, and constructs a query that can be send to the API
-        :param kwargs: a dictionary containing all the parameters for the query,
-        e.g. {"q": "city:Brussels", "fq":"type:event"}
+
+        :param kwargs: a dictionary containing all the parameters for the query, e.g. {"q": "city:Brussels", "fq":"type:event"}
+
         :return: a dictionary of parameters that can be sent to the API, e.g. using the find() method
         """
         out = {}
@@ -125,9 +77,10 @@ class UiTdatabank:
     def __construct_query(supported_fields, kvs_with_bools=list):
         """
         Validates a specific type of query against a list of supported fields
+
         :param supported_fields: a list of fields that is supported in the given type of query
-        :param kvs_with_bools: a list of (key, value) tuples, potentially with booleans in between,
-        that will be rewritten to a query
+        :param kvs_with_bools: a list of (key, value) tuples, potentially with booleans in between, that will be rewritten to a query
+
         :return: a string that can be passed to "q" in the api call
         """
         if len(kvs_with_bools) % 2 == 0:
@@ -148,7 +101,9 @@ class UiTdatabank:
     def construct_production_query(self, key_value_tuples_with_booleans=list):
         """
         Construct a query for a production
+
         :param key_value_tuples_with_booleans: a list of fields that is supported in the given type of query
+
         :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the call)
         """
         return self.__construct_query(self.production_query_fields, key_value_tuples_with_booleans), "type:production"
@@ -156,7 +111,9 @@ class UiTdatabank:
     def construct_event_query(self, key_value_tuples_with_booleans=list):
         """
         Construct a query for events
+
         :param key_value_tuples_with_booleans: a list of fields that is supported in the given type of query
+
         :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the call)
         """
         return self.__construct_query(self.supported_event_query_fields, key_value_tuples_with_booleans), "type:event"
@@ -164,7 +121,9 @@ class UiTdatabank:
     def construct_actor_query(self, key_value_tuples_with_booleans=list):
         """
         Construct a query for actors
+
         :param key_value_tuples_with_booleans: a list of fields that is supported in the given type of query
+
         :return: (a string that can be passed to "q" in the api call, a string that can be passed to "fq" in the call)
         """
         return self.__construct_query(self.actor_query_fields, key_value_tuples_with_booleans), "type:actor"
