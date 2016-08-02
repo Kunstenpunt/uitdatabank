@@ -1,16 +1,16 @@
 import unittest
 from codecs import open
-from uitdatabank.uitdatabank import UiTdatabankSearchResults
+from uitdatabank.searchresults import SearchResults
 from os.path import dirname
 from re import compile, DOTALL
 from json import dumps
 
 
-class TestUiTdatabankSearchResults(unittest.TestCase):
+class TestSearchResults(unittest.TestCase):
     def setUp(self):
         with open(dirname(__file__) + "/test_output_of_upcoming_events_query.json", "r", "utf-8") as f:
             self.raw_results = f.read()
-            self.searchresults = UiTdatabankSearchResults(self.raw_results)
+            self.searchresults = SearchResults(self.raw_results)
 
     def test_get_events_has_expected_length(self):
         events = list(self.searchresults.get_events())
