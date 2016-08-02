@@ -1,4 +1,4 @@
-import requests
+from requests import get
 from requests_oauthlib import OAuth1
 from configparser import ConfigParser
 from codecs import open
@@ -55,7 +55,7 @@ class UiTdatabank:
 
         :return: An uitdatabank searchresults object
         """
-        return SearchResults(requests.get(self.url, auth=self.auth, params=prms, headers=self.headers).text)
+        return SearchResults(get(self.__url, auth=self.__auth, params=parameters, headers=self.__headers).text)
 
     def construct_query_parameters(self, kwargs):
         """
