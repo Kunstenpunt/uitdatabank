@@ -6,6 +6,9 @@ class EventParser:
     Helper class to parse event documents in the json output of the UiTdatabank API v2
     """
 
+    def __init__(self):
+        pass
+
     @staticmethod
     def get_when_from_event(event):
         """
