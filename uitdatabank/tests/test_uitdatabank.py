@@ -9,10 +9,6 @@ class TestUiTdatabank(unittest.TestCase):
     def setUpClass(cls):
         cls.udb = UiTdatabank(dirname(__file__) + "/settings_example.cfg", test=True)
 
-    def test_settings_are_read_in_correctly(self):
-        self.assertEqual(self.udb.settings["oauth"]["app_key"], "BAAC107B-632C-46C6-A254-13BC2CE19C6C")
-        self.assertEqual(self.udb.settings["oauth"]["app_secret"], "ec9a0e8c2cdc52886bc545e14f888612")
-
     def test_construct_production_query(self):
         single_field = [("title", "Hello world")]
         double_field_with_and = [("title", "Hello world"), "AND", ("organiser_label", "Brussel")]
