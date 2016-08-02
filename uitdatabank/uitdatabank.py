@@ -153,6 +153,8 @@ class UiTdatabank:
             for i, item in enumerate(kvs_with_bools):
                 if (i % 2) == 0 and isinstance(item, tuple) and len(item) == 2 and item[0] in supported_fields:
                     q += ":".join(item)
+                elif (i % 2) == 0 and isinstance(item, str) and item not in ["AND", "OR", "NOT"]:
+                    q += item
                 elif (i % 2) == 0 and item not in ["AND", "OR", "NOT"] and len(kvs_with_bools) == 1:
                     q += item
                 elif (i % 2) != 0 and item in ["AND", "OR", "NOT"]:

@@ -25,11 +25,13 @@ class TestUiTdatabank(unittest.TestCase):
         single_field = [("title", "Hello world")]
         double_field_with_and = [("title", "Hello world"), "AND", ("city", "Brussel")]
         single_field_full_text = ["open air cinema"]
+        double_field_boolean_fulltext = [("city", "Gent"), "AND", "jazz"]
         wrong_list_because_no_boolean = [("title", "Hello world"), ("city", "Brussel")]
         wrong_list_because_no_valid_field = [("title", "Hello world"), ("foo", "bar")]
         self.assertEqual(self.udb.construct_event_query(single_field), ("title:Hello world", "type:event"))
         self.assertEqual(self.udb.construct_event_query(double_field_with_and), ("title:Hello world AND city:Brussel", "type:event"))
         self.assertEqual(self.udb.construct_event_query(single_field_full_text), ("open air cinema", "type:event"))
+        self.assertEqual(self.udb.construct_event_query(double_field_boolean_fulltext), ("city:Gent AND jazz", "type:event"))
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_boolean)
         self.assertRaises(ValueError, self.udb.construct_event_query, wrong_list_because_no_valid_field)
 
