@@ -11,18 +11,18 @@ class UiTdatabank:
     Main class for making API calls to UiTdatabank API v2
     """
 
-    def __init__(self, settings_file=dirname(__file__) + "/test/settings_example.cfg", test=False):
+    def __init__(self, path_to_settings_file, test=False):
         """
         Wrapper around UiTdatabank API v2
 
-        :param settings_file: a file in which the settings, such as oauth credentials and api url, are made explicit
+        :param path_to_settings_file: a file in which the settings, such as oauth credentials and api url, are made explicit
         :param test: a boolean that can be set to True (default: False) so that only a limited amount of results is returned for test purposes
 
         :return: an UiTdatabank wrapper that can be used to query the database, whose results will be returned as an UiTdatabankSearchresults object
         """
         self.settings = ConfigParser()
         self.test = test
-        self.settings.read(settings_file)
+        self.settings.read(path_to_settings_file)
         self.auth = OAuth1(self.settings["oauth"]["app_key"],
                            self.settings["oauth"]["app_secret"],
                            self.settings["oauth"]["user_token"],
