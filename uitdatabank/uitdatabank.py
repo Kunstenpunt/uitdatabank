@@ -128,7 +128,3 @@ class UiTdatabank:
         """
         return self.__construct_query(self.actor_query_fields, key_value_tuples_with_booleans), "type:actor"
 
-    def find_upcoming_events_by_organiser_label(self, organiser_label):
-        q, fq = self.construct_event_query([("organiser_label", organiser_label)])
-        params = self.construct_query_parameters({'q': q, 'fq': fq, 'rows': 10 if self.test else 10000, 'past': False})
-        return self.find(params)
