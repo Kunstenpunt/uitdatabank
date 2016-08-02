@@ -1,6 +1,7 @@
 *.json
 .idea/
 settings.cfg
+docs/source/generated/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
