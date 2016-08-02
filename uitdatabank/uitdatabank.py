@@ -106,6 +106,12 @@ class UiTdatabank:
 
         >>> udb.construct_parameters_for_api_call({"q": "city:Brussels", "fq":"type:event", "z": "wrong key"})
         ValueError: Not a correct query parameter: z
+
+        .. note::
+           We are only supporting the following fields: 'q', 'fq', 'rows' and 'past'. This means that the user can not use start, sort, group, pt, sfield, d, facetField, transform and datetype.
+           Sorting, grouping and transform will be provided in :mod:`SearchResults <uitdatabank.searchresults.SearchResults>`.
+           datetype-like functionality will be provided in :mod:`Shortcuts <uitdatabank.shortcuts.Shortcuts>`.
+           Geographical search and faceted search are under consideration.
         """
         out = {}
         for key, value in kwargs.items():

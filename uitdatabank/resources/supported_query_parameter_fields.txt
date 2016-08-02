@@ -1,5 +1,4 @@
 q
 fq
 rows
-sort
 past
