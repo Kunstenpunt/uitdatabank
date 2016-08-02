@@ -4,14 +4,15 @@ from uitdatabank.eventparser import EventParser
 
 
 class SearchResults:
+    """
+    Initializes the uitdatabank search results
+
+    :param results_string: the json output of the uitdatabank json
+
+    :return: None
+    """
+
     def __init__(self, results_string):
-        """
-        Initializes the uitdatabank search results
-
-        :param results_string: the json output of the uitdatabank json
-
-        :return: None
-        """
         self.results = loads(results_string)
 
     def get_soonest_event(self):

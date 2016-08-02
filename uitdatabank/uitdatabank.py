@@ -53,6 +53,7 @@ class UiTdatabank:
 
     Because writing queries like that is tedious, shortcut requests will be collected in a child class :mod:`Shortcuts <uitdatabank.shortcuts.Shortcuts>`, for recurring queries.
     """
+
     def __init__(self, path_to_settings_file, test=False):
         self.__settings = ConfigParser()
         self.__test = test
