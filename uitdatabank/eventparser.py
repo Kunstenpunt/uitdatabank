@@ -7,7 +7,10 @@ class EventParser:
     """
 
     def __init__(self):
-        pass
+        self.test = "ahloha"
+
+    def get_test(self):
+        return self.test
 
     @staticmethod
     def get_when_from_event(event):
