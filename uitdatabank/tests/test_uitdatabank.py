@@ -1,4 +1,6 @@
 import unittest
+
+from uitdatabank.searchresults import SearchResults
 from uitdatabank.uitdatabank import UiTdatabank
 from os.path import dirname
 
@@ -45,6 +47,23 @@ class TestUiTdatabank(unittest.TestCase):
         bad_parameters = {"foo": "bar"}
         self.assertDictEqual(self.udb.construct_query_parameters(good_parameters), {"q": "q"})
         self.assertRaises(ValueError, self.udb.construct_query_parameters, bad_parameters)
+
+    def test_q_parameter_examples(self):
+        full_text = self.udb.construct_query_parameters({"q": "concert"})
+        specific_field = self.udb.construct_query_parameters({"q": "city:Gent"})
+        boolean_operator = self.udb.construct_query_parameters({"q": "cultuurcentrum AND berchem"})
+        exact_term = self.udb.construct_query_parameters({"q": 'location_label:"cultuurcentrum berchem"'})
+        self.assertLessEqual(len(self.udb.find(full_text).get_soonest_event()), 1)
+        self.assertLessEqual(len(self.udb.find(specific_field).get_soonest_event()), 1)
+        self.assertLessEqual(len(self.udb.find(boolean_operator).get_soonest_event()), 1)
+        self.assertLessEqual(len(self.udb.find(exact_term).get_soonest_event()), 1)
+
+    def test_fq_parameter_examples(self):
+        concert_in_gent = self.udb.construct_query_parameters({"q": "concert", "fq": "city:Gent"})
+        concert_in_gent_above_18 = self.udb.construct_query_parameters({"q": "concert", "fq": "city:Gent AND agefrom:18"})
+        self.assertLessEqual(len(self.udb.find(concert_in_gent).get_soonest_event()), 1)
+        self.assertLessEqual(len(self.udb.find(concert_in_gent_above_18).get_soonest_event()), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
