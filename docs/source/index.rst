@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-======================================
-Python wrapper voor UiTdatabank API v2
-======================================
+=================================
+Python3 wrapper UiTdatabank APIv2
+=================================
 
 .. toctree::
    :maxdepth: 4
@@ -15,6 +15,8 @@ De API is uitgebreid beschreven in deze `handleiding <http://goo.gl/gRCJ5w>`_.
 
 Om de API in Python te gebruiken kan je gebruik maken van de requests bibliotheek.
 Om het authenticatie en zoekproces te vergemakkelijken schreef ik een lichte wrapper rond de API.
+
+De wrapper is getest met python 3.4, maar zou ook voor python 2.7+ moeten werken.
 
 Voorbeeld
 =========
@@ -41,7 +43,10 @@ De settings voor authenticatie en de API basisurl worden aangegeven in een setti
      [uitdatabank]
      url = https://www.uitid.be/uitid/rest/searchv2/search
 
-Het pad naar die file wordt bij de initialisatie van de wrapper meegegeven als argument.
+De key/secret combinatie die hier wordt gedocumenteerd zijn de publieke keys voor demo- en testdoeleinden (augustus 2016).
+
+Het pad naar deze file wordt bij de initialisatie van de wrapper meegegeven als argument.
+De wrapper doet de rest.
 
 Overzicht van functionaliteit
 =============================
@@ -49,6 +54,20 @@ Overzicht van functionaliteit
 Een overzicht van de klassen en functies vind je hier:
 
 :ref:`modindex`
+
+Overzicht van de shortcuts
+==========================
+
+In :mod:`Shortcuts <uitdatabank.shortcuts.Shortcuts>` worden shortcuts naar frequente API calls verzameld.
+Op dit moment zijn er nog niet veel shortcuts geimplementeerd, in afwachting van een typologie van API calls.
+Een eerste probeersel, dat waarschijnlijk in een volgende versie zal verdwijnen:
+
+* Zoeken naar events
+
+  * toekomstige events op basis van de organisator
+    :func:`find_upcoming_events_by_organiser_label <uitdatabank.shortcuts.Shortcuts.find_upcoming_events_by_organiser_label>`
+  * toekomstige events op basis van de stad
+    :func:`find_upcoming_events_by_city_name <uitdatabank.shortcuts.Shortcuts.find_upcoming_events_by_city_name>`
 
 
 Contact
