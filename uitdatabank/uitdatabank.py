@@ -56,7 +56,7 @@ class UiTdatabank:
 
     def __init__(self, path_to_settings_file, test=False):
         self.__settings = ConfigParser()
-        self.__test = test
+        self._test = test
         self.__settings.read(path_to_settings_file)
         self.__auth = OAuth1(self.__settings["oauth"]["app_key"],
                              self.__settings["oauth"]["app_secret"],
