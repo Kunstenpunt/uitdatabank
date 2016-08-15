@@ -29,7 +29,7 @@ class Shortcuts(UiTdatabank):
     Feel free to suggest a better design: https://github.com/ruettet/uitdatabank/issues/3
     """
     def __init__(self, path_to_settings_file, test):
-        UiTdatabank.__init__(self, path_to_settings_file, test)
+        super(Shortcuts, self).__init__(path_to_settings_file, test)
 
     def __find_upcoming_events_by_x(self, x, value):
         q, fq = self.construct_event_query([(x, value)])
