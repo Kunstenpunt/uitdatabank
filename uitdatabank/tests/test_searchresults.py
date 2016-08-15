@@ -1,16 +1,16 @@
 import unittest
-from codecs import open
-from uitdatabank.searchresults import SearchResults
 from os.path import dirname, join
 from re import compile, DOTALL
 from json import dumps
+
+from uitdatabank.shortcuts import Shortcuts
 
 
 class TestSearchResults(unittest.TestCase):
     def setUp(self):
         udbsc = Shortcuts(join(dirname(__file__), "settings_example.cfg"), True)
-            self.raw_results = f.read()
-            self.searchresults = SearchResults(self.raw_results)
+        self.searchresults = udbsc.find_upcoming_events_by_organiser_label("Flagey")
+        self.raw_results = dumps(self.searchresults.results)
 
     def test_get_events_has_expected_length(self):
         events = list(self.searchresults.get_events())
