@@ -1,14 +1,14 @@
 import unittest
 from codecs import open
 from uitdatabank.searchresults import SearchResults
-from os.path import dirname
+from os.path import dirname, join
 from re import compile, DOTALL
 from json import dumps
 
 
 class TestSearchResults(unittest.TestCase):
     def setUp(self):
-        with open(dirname(__file__) + "/test_output_of_upcoming_events_query.json", "r", "utf-8") as f:
+        udbsc = Shortcuts(join(dirname(__file__), "settings_example.cfg"), True)
             self.raw_results = f.read()
             self.searchresults = SearchResults(self.raw_results)
 

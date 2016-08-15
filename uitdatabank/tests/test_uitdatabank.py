@@ -1,13 +1,13 @@
 import unittest
 
 from uitdatabank.uitdatabank import UiTdatabank
-from os.path import dirname
+from os.path import dirname, join
 
 
 class TestUiTdatabank(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.udb = UiTdatabank(dirname(__file__) + "/settings_example.cfg", test=True)
+        cls.udb = UiTdatabank(join(dirname(__file__), "settings_example.cfg"), test=True)
 
     def test_construct_production_query(self):
         single_field = [("title", "Hello world")]
